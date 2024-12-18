@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option csharp_namespace = "ServidorgRPC";
+
+package greet;
+
+service Greeter {
+  rpc Reservar (ReservaRequest) returns (ReservaReply);
+  rpc AgregarCliente (AgregarRequest) returns (AgregarReply);
+}
+
+message ReservaRequest {
+  int32 idCliente = 1;
+  int32 dias = 2;
+}
+message ReservaReply {
+  int32 idCliente = 1;
+  int32 dias = 2;
+}
+
+message AgregarRequest {
+  string rut = 1;
+  string nombre = 2;
+  string apellido = 3;
+}
+message AgregarReply {
+  string rut = 1;
+  string nombre = 2;
+  string apellido = 3;
+}
