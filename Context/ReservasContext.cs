@@ -22,9 +22,25 @@ public partial class ReservasContext : DbContext
     public virtual DbSet<Reserva> Reservas { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySQL("server=localhost;port=3306;database=reservas;user=root;password=admin");
+    {
+        try
+        {
+            DotNetEnv.Env.Load();
+            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new InvalidOperationException("DB_CONNECTION_STRING environment variable is not set.");
+            }
+
+            optionsBuilder.UseMySQL(connectionString);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"An error occurred while configuring the database: {ex.Message}");
+            throw; // Re-throw the exception to ensure the application is aware of the failure
+        }
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Cliente>(entity =>
