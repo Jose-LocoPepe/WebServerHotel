@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using WebServerHotel;
 
 namespace MyApp.Namespace
@@ -10,7 +11,12 @@ namespace MyApp.Namespace
         public void OnGet()
         {
             ReservasContext context = new ReservasContext();
-            Reservas = context.Reservas.ToList();
+            Reservas = context.Reservas
+                            .Include(r => r.IdClienteNavigation)
+                            .ToList();
+            //Obtener nombre del cliente con el id de cliente
+
+
         }
     }
 }

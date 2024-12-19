@@ -3,29 +3,44 @@
 @{
     ViewData["Title"] = "Habitaciones Disponibles";
 }
+
 <div class="container">
+    <form asp-action="HabitacionesDisponibles" method="get">
+        <label>Fecha Inicio:</label>
+        <input type="date" name="fechaInicio" required />
+        <label>Fecha Fin:</label>
+        <input type="date" name="fechaFin" required />
+        <button type="submit" class="btn btn-primary">Buscar Habitaciones</button>
+    </form>
+
     <h1>Habitaciones Disponibles</h1>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Numero</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tdbody>
-                    @foreach (var habitacion in Model.HabitacionesDisponibles)
-                    {
+
+    @if (Model.HabitacionesDisponibles != null && Model.HabitacionesDisponibles.Count > 0)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>@habitacion.Id</td>
-                            <td>@habitacion.Numero</td>
+                            <th>ID</th>
+                            <th>Numero Habitacion</th>
                         </tr>
-                    }
-            
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var habitacion in Model.HabitacionesDisponibles)
+                        {
+                            <tr>
+                                <td>@habitacion.Id</td>
+                                <td>@habitacion.Numero</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    }
+    else if (Request.Query.ContainsKey("fechaInicio") && Request.Query.ContainsKey("fechaFin"))
+    {
+        <p>No hay habitaciones disponibles para las fechas seleccionadas.</p>
+    }
 </div>
