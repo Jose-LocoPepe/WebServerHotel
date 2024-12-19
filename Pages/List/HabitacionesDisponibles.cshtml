@@ -1,0 +1,31 @@
+﻿@page
+@model MyApp.Namespace.HabitacionesDisponiblesModel
+@{
+    ViewData["Title"] = "Habitaciones Disponibles";
+}
+<div class="container">
+    <h1>Habitaciones Disponibles</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Numero</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tdbody>
+                    @foreach (var habitacion in Model.HabitacionesDisponibles)
+                    {
+                        <tr>
+                            <td>@habitacion.Id</td>
+                            <td>@habitacion.Numero</td>
+                        </tr>
+                    }
+            
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿@page
+@model MyApp.Namespace.ListaReservasModel
+@{
+    ViewData["Title"] = "Lista de Reservas";
+}
+<div class="container">
+    <h1>Lista de Reservas</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha de Inicio</th>
+                        <th>Fecha de Fin</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tdbody>
+                    @foreach (var reserva in Model.Reservas)
+                    {
+                        <tr>
+                            <td>@reserva.Id</td>
+                            <td>@reserva.FechaInicio</td>
+                            <td>@reserva.FechaFin</td>
+                        </tr>
+                    }
+                </tdbody>
+            </table>
+        </div>
+    </div>
+</div>
