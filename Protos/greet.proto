@@ -14,8 +14,7 @@ message ReservaRequest {
   int32 dias = 2;
 }
 message ReservaReply {
-  int32 idCliente = 1;
-  int32 dias = 2;
+  string message = 1;
 }
 
 message AgregarRequest {
@@ -24,7 +23,5 @@ message AgregarRequest {
   string apellido = 3;
 }
 message AgregarReply {
-  string rut = 1;
-  string nombre = 2;
-  string apellido = 3;
+  string message = 1;
 }

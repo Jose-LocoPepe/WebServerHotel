@@ -13,10 +13,8 @@ namespace MyApp.Namespace
             ReservasContext context = new ReservasContext();
             Reservas = context.Reservas
                             .Include(r => r.IdClienteNavigation)
+                            .OrderBy(r => r.Id)
                             .ToList();
-            //Obtener nombre del cliente con el id de cliente
-
-
         }
     }
 }

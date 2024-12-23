@@ -1,6 +1,9 @@
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebServerHotel;
+using Grpc.Net.Client;
+using ServidorgRPC;
 
 namespace MyApp.Namespace
 {
@@ -12,6 +15,8 @@ namespace MyApp.Namespace
         public List<Cliente> Clientes { get; set; } = new List<Cliente>();
         public string? ErrorMessage { get; set; }
         public string? SuccessMessage { get; set; }
+        private string? grpcClientUrl = Environment.GetEnvironmentVariable("GRPC_CLIENT_URL");
+
 
         public void OnGet()
         {
@@ -28,10 +33,15 @@ namespace MyApp.Namespace
             }
         }
 
-        public void OnPost(int habitacionId, DateTime fechaInicio, DateTime fechaFin, int clienteId)
+        public async Task OnPost(int habitacionId, DateTime fechaInicio, DateTime fechaFin, int clienteId)
         {
             try
             {
+                if (string.IsNullOrEmpty(grpcClientUrl))
+                {
+                    TempData["Error"] = "No se ha configurado el servidor gRPC.";
+                    return;
+                }
                 // Validar entrada del formulario
                 if (fechaInicio >= fechaFin)
                 {
@@ -41,6 +51,14 @@ namespace MyApp.Namespace
                     return;
                 }
 
+                int diasReserva = (fechaFin - fechaInicio).Days;
+                if (diasReserva <= 0)
+                {
+                    // Mostrar mensaje de error en consola
+                    Console.WriteLine("La reserva debe ser de al menos un día.");
+                    TempData["Error"] = "La reserva debe ser de al menos un día.";
+                    return;
+                }
 
                 // Verificar que la habitación exista
                 var habitacion = _context.Habitacions.Find(habitacionId);
@@ -60,7 +78,7 @@ namespace MyApp.Namespace
                 if (ocupada)
                 {
                     TempData["Error"] = "La habitación ya está ocupada en esas fechas.";
-                    return ;
+                    return;
                 }
                 Console.WriteLine("Habitación disponible.");
 
@@ -75,11 +93,20 @@ namespace MyApp.Namespace
 
                 Console.WriteLine("Reserva creada.");
                 // Guardar la reserva en la base de datos
-
                 _context.Reservas.Add(nuevaReserva);
                 _context.SaveChanges();
 
                 TempData["Success"] = "Reserva creada exitosamente.";
+
+                // TODO: The port number must match the port number of the gRPC Client server
+                using var channel = GrpcChannel.ForAddress(grpcClientUrl);
+                var client = new Greeter.GreeterClient(channel);
+                var request = new ReservaRequest { IdCliente = clienteId, Dias = diasReserva};
+                var reply = await client.ReservarAsync(request);
+
+                Console.WriteLine("Reserva procesada.");
+                Console.WriteLine($"Respuesta del servidor: {reply.Message}");
+
                 return;
             }
             catch (Exception ex)
