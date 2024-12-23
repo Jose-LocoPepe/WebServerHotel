@@ -7,11 +7,28 @@
 
 <h1>Crear Reserva</h1>
 
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <p class="text-danger">@Model.ErrorMessage</p>
+}
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <p class="text-success">@Model.SuccessMessage</p>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
 <form method="post" class="d-flex justify-content-center align-items-center flex-wrap">
-    <!-- Selección de habitación -->
     <div class="form-group me-3">
         <label for="habitacion" class="form-label">Seleccione habitación:</label>
-        <select id="habitacion" class="form-control form-control-sm" name="habitacion">
+        <select id="habitacionId" class="form-control form-control-sm" name="habitacionId">
             <option value="" disabled selected>--Seleccione una habitación--</option>
             @if (Model.Habitaciones == null || !Model.Habitaciones.Any())
             {
@@ -25,26 +42,38 @@
                 }
             }
         </select>
+        <label for="cliente" class="form-label">Seleccione cliente:</label>
+        <select id="clienteId" class="form-control form-control-sm" name="clienteId">
+            <option value="" disabled selected>--Seleccione un cliente--</option>
+            @if (Model.Clientes == null || !Model.Clientes.Any())
+            {
+                <option>No hay clientes disponibles</option>
+            }
+            else
+            {
+                @foreach (var cliente in Model.Clientes)
+                {
+                    <option value="@cliente.Id">@cliente.Nombre @cliente.Apellido</option>
+                }
+            }
+        </select>
     </div>
-    <!-- Fechas -->
+
     <div class="form-group me-3">
         <label for="fechaInicio" class="form-label">Fecha de inicio:</label>
         <input id="fechaInicio" class="form-control form-control-sm" type="date" name="fechaInicio" required
             min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@maxDate.ToString("yyyy-MM-dd")" />
-    </div>
-    <div class="form-group">
         <label for="fechaFin" class="form-label">Fecha de fin:</label>
         <input id="fechaFin" class="form-control form-control-sm" type="date" name="fechaFin" required
             min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@maxDate.ToString("yyyy-MM-dd")" />
     </div>
-    <!-- Botón de envío -->
-    @if ((Model.Habitaciones == null || !Model.Habitaciones.Any()))
-    {
-        <p class="text-danger">No se puede crear una Reserva sin una habitación.</p>
-        <button type="submit" class="btn btn-primary" disabled>Reservar</button>
-    }
-    else
-    {
-        <button type="submit" class="btn btn-primary">Reservar</button>
-    }
+
+    <div class="form-group">
+
+        <div class="d-flex justify-content-center align-items-center flex-wra">
+
+            <button type="submit" class="btn btn-primary" >Reservar</button>
+        </div>
+    </div>
+
 </form>
