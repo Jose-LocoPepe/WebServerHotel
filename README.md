@@ -66,13 +66,13 @@ dotnet ef database update
 1. **Ejecutar los Servicios gRPC**:
    - Para el servicio de Reservas:
      ```bash
-     dotnet run --project ReservasGrpcService
+     dotnet run --project ServidorgRPC
      ```
 
 2. **Ejecutar las Aplicaciones Web**:
    - Para la aplicación web de Reservas:
      ```bash
-     dotnet run --project ReservasWebApp
+     dotnet run --project WebServerHotel
      ```
 
 3. Accede a las aplicaciones.
